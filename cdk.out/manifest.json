@@ -1,0 +1,94 @@
+{
+  "version": "16.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "CdkConfigAutoRemediationStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "CdkConfigAutoRemediationStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "CdkConfigAutoRemediationStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://793209430381/us-east-1",
+      "properties": {
+        "templateFile": "CdkConfigAutoRemediationStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::793209430381:role/cdk-hnb659fds-deploy-role-793209430381-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::793209430381:role/cdk-hnb659fds-cfn-exec-role-793209430381-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-793209430381-us-east-1/24b14412cb2383caa6112b802176580de0d46b07d294470b07ec14fe016eb9a5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "CdkConfigAutoRemediationStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::793209430381:role/cdk-hnb659fds-lookup-role-793209430381-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "CdkConfigAutoRemediationStack.assets"
+      ],
+      "metadata": {
+        "/CdkConfigAutoRemediationStack/ConfigS3BucketLoggingEnabled/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ConfigS3BucketLoggingEnabled63021651"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/AutomationAssumeRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AutomationAssumeRoleAC6E73A7"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/PutBucketLoggingPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PutBucketLoggingPolicyC1831AF9"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/AutomationPassRolePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AutomationPassRolePolicy6688B2B3"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/S3LoggingEnabledRemediationConfiguration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3LoggingEnabledRemediationConfiguration"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/CdkConfigAutoRemediationStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "CdkConfigAutoRemediationStack"
+    }
+  }
+}

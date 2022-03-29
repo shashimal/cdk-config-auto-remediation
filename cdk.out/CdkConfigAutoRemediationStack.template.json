@@ -1,0 +1,215 @@
+{
+  "Resources": {
+    "ConfigS3BucketLoggingEnabled63021651": {
+      "Type": "AWS::Config::ConfigRule",
+      "Properties": {
+        "Source": {
+          "Owner": "AWS",
+          "SourceIdentifier": "S3_BUCKET_LOGGING_ENABLED"
+        },
+        "ConfigRuleName": "s3-bucket-logging-enabled",
+        "Scope": {
+          "ComplianceResourceTypes": [
+            "AWS::S3::Bucket"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/ConfigS3BucketLoggingEnabled/Resource"
+      }
+    },
+    "AutomationAssumeRoleAC6E73A7": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ssm.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AmazonSSMAutomationRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/AutomationAssumeRole/Resource"
+      }
+    },
+    "PutBucketLoggingPolicyC1831AF9": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:PutBucketLogging",
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PutBucketLoggingPolicyC1831AF9",
+        "Roles": [
+          {
+            "Ref": "AutomationAssumeRoleAC6E73A7"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/PutBucketLoggingPolicy/Resource"
+      }
+    },
+    "AutomationPassRolePolicy6688B2B3": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "iam:PassRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AutomationAssumeRoleAC6E73A7",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "AutomationPassRolePolicy6688B2B3",
+        "Roles": [
+          {
+            "Ref": "AutomationAssumeRoleAC6E73A7"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/AutomationPassRolePolicy/Resource"
+      }
+    },
+    "S3LoggingEnabledRemediationConfiguration": {
+      "Type": "AWS::Config::RemediationConfiguration",
+      "Properties": {
+        "ConfigRuleName": {
+          "Ref": "ConfigS3BucketLoggingEnabled63021651"
+        },
+        "TargetId": "AWS-ConfigureS3BucketLogging",
+        "TargetType": "SSM_DOCUMENT",
+        "Automatic": true,
+        "MaximumAutomaticAttempts": 2,
+        "Parameters": {
+          "AutomationAssumeRole": {
+            "StaticValue": {
+              "Values": [
+                {
+                  "Fn::GetAtt": [
+                    "AutomationAssumeRoleAC6E73A7",
+                    "Arn"
+                  ]
+                }
+              ]
+            }
+          },
+          "BucketName": {
+            "ResourceValue": {
+              "Value": "RESOURCE_ID"
+            }
+          },
+          "GrantedPermission": {
+            "StaticValue": {
+              "Values": [
+                "FULL_CONTROL"
+              ]
+            }
+          },
+          "GranteeType": {
+            "StaticValue": {
+              "Values": [
+                "Group"
+              ]
+            }
+          },
+          "GranteeUri": {
+            "StaticValue": {
+              "Values": [
+                "http://acs.amazonaws.com/groups/s3/LogDelivery"
+              ]
+            }
+          },
+          "TargetBucket": {
+            "StaticValue": {
+              "Values": [
+                "du-access-logs"
+              ]
+            }
+          }
+        },
+        "RetryAttemptSeconds": 60
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/S3LoggingEnabledRemediationConfiguration"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWMywrCMBREv6X75GpE0H3XgqQfIDG5LbfNA5pEkZB/1z5czZyZYU4gLnBs1DtybSZu6QmlS0pP7Bc9ig6+pwHKTXk1oJHZImt7367xnyQ6NKQShb3I8wqVkXJQZNhni96DJf1ZcHO1bg8x5FljZT4YhDEeXuIM4gqiGSMRn7NP5BDkpl/SWSYhtQAAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "CdkConfigAutoRemediationStack/CDKMetadata/Default"
+      }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

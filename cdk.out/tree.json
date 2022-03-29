@@ -1,0 +1,282 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.0.98"
+        }
+      },
+      "CdkConfigAutoRemediationStack": {
+        "id": "CdkConfigAutoRemediationStack",
+        "path": "CdkConfigAutoRemediationStack",
+        "children": {
+          "ConfigS3BucketLoggingEnabled": {
+            "id": "ConfigS3BucketLoggingEnabled",
+            "path": "CdkConfigAutoRemediationStack/ConfigS3BucketLoggingEnabled",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkConfigAutoRemediationStack/ConfigS3BucketLoggingEnabled/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Config::ConfigRule",
+                  "aws:cdk:cloudformation:props": {
+                    "source": {
+                      "owner": "AWS",
+                      "sourceIdentifier": "S3_BUCKET_LOGGING_ENABLED"
+                    },
+                    "configRuleName": "s3-bucket-logging-enabled",
+                    "scope": {
+                      "complianceResourceTypes": [
+                        "AWS::S3::Bucket"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_config.CfnConfigRule",
+                  "version": "2.17.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_config.ManagedRule",
+              "version": "2.17.0"
+            }
+          },
+          "AutomationAssumeRole": {
+            "id": "AutomationAssumeRole",
+            "path": "CdkConfigAutoRemediationStack/AutomationAssumeRole",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkConfigAutoRemediationStack/AutomationAssumeRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ssm.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AmazonSSMAutomationRole"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.17.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.17.0"
+            }
+          },
+          "PutBucketLoggingPolicy": {
+            "id": "PutBucketLoggingPolicy",
+            "path": "CdkConfigAutoRemediationStack/PutBucketLoggingPolicy",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkConfigAutoRemediationStack/PutBucketLoggingPolicy/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                  "aws:cdk:cloudformation:props": {
+                    "policyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "s3:PutBucketLogging",
+                          "Effect": "Allow",
+                          "Resource": "*"
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "policyName": "PutBucketLoggingPolicyC1831AF9",
+                    "roles": [
+                      {
+                        "Ref": "AutomationAssumeRoleAC6E73A7"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                  "version": "2.17.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Policy",
+              "version": "2.17.0"
+            }
+          },
+          "AutomationPassRolePolicy": {
+            "id": "AutomationPassRolePolicy",
+            "path": "CdkConfigAutoRemediationStack/AutomationPassRolePolicy",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkConfigAutoRemediationStack/AutomationPassRolePolicy/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                  "aws:cdk:cloudformation:props": {
+                    "policyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "iam:PassRole",
+                          "Effect": "Allow",
+                          "Resource": {
+                            "Fn::GetAtt": [
+                              "AutomationAssumeRoleAC6E73A7",
+                              "Arn"
+                            ]
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "policyName": "AutomationPassRolePolicy6688B2B3",
+                    "roles": [
+                      {
+                        "Ref": "AutomationAssumeRoleAC6E73A7"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                  "version": "2.17.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Policy",
+              "version": "2.17.0"
+            }
+          },
+          "S3LoggingEnabledRemediationConfiguration": {
+            "id": "S3LoggingEnabledRemediationConfiguration",
+            "path": "CdkConfigAutoRemediationStack/S3LoggingEnabledRemediationConfiguration",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::Config::RemediationConfiguration",
+              "aws:cdk:cloudformation:props": {
+                "configRuleName": {
+                  "Ref": "ConfigS3BucketLoggingEnabled63021651"
+                },
+                "targetId": "AWS-ConfigureS3BucketLogging",
+                "targetType": "SSM_DOCUMENT",
+                "automatic": true,
+                "maximumAutomaticAttempts": 2,
+                "parameters": {
+                  "AutomationAssumeRole": {
+                    "StaticValue": {
+                      "Values": [
+                        {
+                          "Fn::GetAtt": [
+                            "AutomationAssumeRoleAC6E73A7",
+                            "Arn"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "BucketName": {
+                    "ResourceValue": {
+                      "Value": "RESOURCE_ID"
+                    }
+                  },
+                  "GrantedPermission": {
+                    "StaticValue": {
+                      "Values": [
+                        "FULL_CONTROL"
+                      ]
+                    }
+                  },
+                  "GranteeType": {
+                    "StaticValue": {
+                      "Values": [
+                        "Group"
+                      ]
+                    }
+                  },
+                  "GranteeUri": {
+                    "StaticValue": {
+                      "Values": [
+                        "http://acs.amazonaws.com/groups/s3/LogDelivery"
+                      ]
+                    }
+                  },
+                  "TargetBucket": {
+                    "StaticValue": {
+                      "Values": [
+                        "du-access-logs"
+                      ]
+                    }
+                  }
+                },
+                "retryAttemptSeconds": 60
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_config.CfnRemediationConfiguration",
+              "version": "2.17.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "CdkConfigAutoRemediationStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "CdkConfigAutoRemediationStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.17.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.98"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.17.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.17.0"
+    }
+  }
+}
